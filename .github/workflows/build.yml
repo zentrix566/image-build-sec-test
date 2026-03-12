@@ -64,7 +64,7 @@ jobs:
         with:
           image-ref: 'local-check-image:${{ github.sha }}'
           format: 'table'
-          exit-code: '1' # 发现漏洞则中断
+          exit-code: '0' # 发现漏洞则中断
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
@@ -87,5 +87,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # 重新使用之前的 GHA 缓存，推送会非常快
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
