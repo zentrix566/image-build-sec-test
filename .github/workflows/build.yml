@@ -60,6 +60,7 @@ jobs:
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
+        if: always()
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
           format: 'table'
@@ -70,6 +71,7 @@ jobs:
 
       - name: Run Trivy FS scan
         uses: aquasecurity/trivy-action@master
+        if: always()
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -80,6 +82,7 @@ jobs:
 
       - name: Run Hadolint Dockerfile scan
         uses: hadolint/hadolint-action@v3.1.0
+        if: always()
         with:
           dockerfile: Dockerfile
           failure-threshold: error

@@ -49,6 +49,7 @@ trivy-image-scan:
     - trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed "$IMAGE_NAME:$IMAGE_TAG"
   only:
     - main
+  when: always
 
 trivy-fs-scan:
   stage: scan
@@ -60,6 +61,7 @@ trivy-fs-scan:
   only:
     - main
     - merge_requests
+  when: always
 
 hadolint-scan:
   stage: scan
@@ -69,3 +71,4 @@ hadolint-scan:
   only:
     - main
     - merge_requests
+  when: always
