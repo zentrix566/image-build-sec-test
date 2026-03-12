@@ -1,0 +1,30 @@
+target/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+
+# Logs
+logs/
+*.log
+
+# Temp
+tmp/
+temp/
+*.tmp
+
+# Docker
+.dockerignore
+.DS_Store

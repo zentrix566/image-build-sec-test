@@ -1,0 +1,71 @@
+stages:
+  - build
+  - scan
+  - push
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE/demo-app"
+  IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+
+cache:
+  paths:
+    - .m2/repository
+    - target/
+
+build:
+  stage: build
+  image: maven:3.9.6-eclipse-temurin-17-jammy
+  script:
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - target/*.jar
+  only:
+    - main
+    - merge_requests
+
+docker-build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER -p "$CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --pull -t "$IMAGE_NAME:$IMAGE_TAG" .
+    - docker push "$IMAGE_NAME:$IMAGE_TAG"
+    - docker tag "$IMAGE_NAME:$IMAGE_TAG" "$IMAGE_NAME:latest"
+    - docker push "$IMAGE_NAME:latest"
+  only:
+    - main
+
+trivy-image-scan:
+  stage: scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed "$IMAGE_NAME:$IMAGE_TAG"
+  only:
+    - main
+
+trivy-fs-scan:
+  stage: scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy fs --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed .
+  only:
+    - main
+    - merge_requests
+
+hadolint-scan:
+  stage: scan
+  image: hadolint/hadolint:latest-alpine
+  script:
+    - hadolint Dockerfile --failure-threshold error
+  only:
+    - main
+    - merge_requests
