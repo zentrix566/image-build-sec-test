@@ -1,5 +1,5 @@
 # 多阶段构建 - 第一阶段：构建
-FROM maven:3.9.6-eclipse-temurin-17-jammy AS builder
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 
 # 设置工作目录
 WORKDIR /app
